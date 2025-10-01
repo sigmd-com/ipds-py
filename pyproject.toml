@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ipds"
 version = "0.1.0dev"
 description = "IP Describe Library - Comprehensive IP information lookup tool"
-authors = [{name = "Juan Lee", email = "me@juany.kr"}]
+authors = [{name = "Juan Lee", email = "juan.lee@sigmd.com"}]
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.12"

@@ -140,3 +140,9 @@ Thumbs.db
 logs/
 temp/
 tmp/
+
+# Example files
+batch_processing_results.json
+final_network_scan_report.json
+ip_list.txt
+large_ip_list.txt

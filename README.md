@@ -1,6 +1,6 @@
 ## IPDS (IP Describe Library)
 ---
-This is IP Describe tool for Zenith Products.  
+This is IP Describe tool
 
 ### Features
 - Get ASN By IP - IP 주소로 ASN 조회
