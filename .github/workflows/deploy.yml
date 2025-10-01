@@ -9,6 +9,10 @@ on:
     paths: [ 'VERSION' ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -70,23 +74,26 @@ jobs:
       run: |
         twine upload dist/*
     
-    - name: Create GitHub Release
+    - name: Create Git Tag and Release
       if: success()
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.version.outputs.version }}
-        release_name: Release v${{ steps.version.outputs.version }}
-        body: |
-          ## Changes in v${{ steps.version.outputs.version }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+        git push origin "v${{ steps.version.outputs.version }}"
+        
+        # Create GitHub Release using GitHub CLI
+        gh release create "v${{ steps.version.outputs.version }}" \
+          --title "Release v${{ steps.version.outputs.version }}" \
+          --notes "## Changes in v${{ steps.version.outputs.version }}
           
           - Automated release from VERSION file update
           - Package built and uploaded to PyPI
           
           ### Installation
-          ```bash
+          \`\`\`bash
           pip install ipds==${{ steps.version.outputs.version }}
-          ```
-        draft: false
-        prerelease: ${{ contains(steps.version.outputs.version, 'a') || contains(steps.version.outputs.version, 'b') || contains(steps.version.outputs.version, 'rc') || contains(steps.version.outputs.version, 'dev') }}
+          \`\`\`" \
+          ${{ contains(steps.version.outputs.version, 'a') || contains(steps.version.outputs.version, 'b') || contains(steps.version.outputs.version, 'rc') || contains(steps.version.outputs.version, 'dev') && '--prerelease' || '' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
