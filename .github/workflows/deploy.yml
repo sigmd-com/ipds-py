@@ -1,0 +1,92 @@
+# 필요한 GitHub Secrets:
+# - PYPI_API_TOKEN: PyPI API 토큰 (https://pypi.org/manage/account/token/)
+
+name: Deploy library to PyPI
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'VERSION' ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Read version from VERSION file
+      id: version
+      run: |
+        VERSION=$(cat VERSION | tr -d '\n\r')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Validate version format
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+(a[0-9]+|b[0-9]+|rc[0-9]+)?(\.post[0-9]+)?(\.dev[0-9]+)?$ ]]; then
+          echo "Error: Invalid version format: $VERSION"
+          exit 1
+        fi
+    
+    - name: Update version in setup.py
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        sed -i "s/version=\"[^\"]*\"/version=\"$VERSION\"/" setup.py
+        echo "Updated setup.py with version: $VERSION"
+    
+    - name: Update version in pyproject.toml
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        sed -i "s/version = \"[^\"]*\"/version = \"$VERSION\"/" pyproject.toml
+        echo "Updated pyproject.toml with version: $VERSION"
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Upload to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        twine upload dist/*
+    
+    - name: Create GitHub Release
+      if: success()
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        release_name: Release v${{ steps.version.outputs.version }}
+        body: |
+          ## Changes in v${{ steps.version.outputs.version }}
+          
+          - Automated release from VERSION file update
+          - Package built and uploaded to PyPI
+          
+          ### Installation
+          ```bash
+          pip install ipds==${{ steps.version.outputs.version }}
+          ```
+        draft: false
+        prerelease: ${{ contains(steps.version.outputs.version, 'a') || contains(steps.version.outputs.version, 'b') || contains(steps.version.outputs.version, 'rc') || contains(steps.version.outputs.version, 'dev') }}
