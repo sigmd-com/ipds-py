@@ -1,27 +1,27 @@
 #!/bin/bash
 
-# IPDS 네트워크 분석 예제
-# 이 스크립트는 IPDS의 네트워크 분석 기능을 보여줍니다.
+# IPDS Network Analysis Examples
+# This script demonstrates the network analysis functionality of IPDS.
 
-echo "=== IPDS 네트워크 분석 예제 ==="
+echo "=== IPDS Network Analysis Examples ==="
 echo
 
-echo "1. 프라이빗 IP 네트워크 분석"
+echo "1. Private IP Network Analysis"
 echo "================================"
 
-echo "Class A 프라이빗 IP (10.0.0.1):"
+echo "Class A Private IP (10.0.0.1):"
 ipds 10.0.0.1 --network-only
 echo
 
-echo "Class B 프라이빗 IP (172.16.0.1):"
+echo "Class B Private IP (172.16.0.1):"
 ipds 172.16.0.1 --network-only
 echo
 
-echo "Class C 프라이빗 IP (192.168.1.1):"
+echo "Class C Private IP (192.168.1.1):"
 ipds 192.168.1.1 --network-only
 echo
 
-echo "2. 공인 IP 네트워크 분석"
+echo "2. Public IP Network Analysis"
 echo "================================"
 
 echo "Google DNS (8.8.8.8):"
@@ -36,27 +36,27 @@ echo "SK Broadband (180.66.201.68):"
 ipds 180.66.201.68 --network-only
 echo
 
-echo "3. 특수 IP 주소 분석"
+echo "3. Special IP Address Analysis"
 echo "================================"
 
-echo "루프백 주소 (127.0.0.1):"
+echo "Loopback Address (127.0.0.1):"
 ipds 127.0.0.1 --network-only
 echo
 
-echo "링크 로컬 주소 (169.254.1.1):"
+echo "Link Local Address (169.254.1.1):"
 ipds 169.254.1.1 --network-only
 echo
 
-echo "멀티캐스트 주소 (224.0.0.1):"
+echo "Multicast Address (224.0.0.1):"
 ipds 224.0.0.1 --network-only
 echo
 
-echo "4. 결과를 JSON 파일로 저장"
+echo "4. Save Results to JSON File"
 echo "================================"
 
-echo "네트워크 분석 결과를 network_analysis.json에 저장 중..."
+echo "Saving network analysis results to network_analysis.json..."
 ipds 8.8.8.8 --output network_analysis.json
-echo "저장 완료: network_analysis.json"
+echo "Saved: network_analysis.json"
 echo
 
-echo "=== 네트워크 분석 예제 완료 ==="
+echo "=== Network Analysis Examples Complete ==="

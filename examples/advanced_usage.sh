@@ -1,63 +1,63 @@
 #!/bin/bash
 
-# IPDS 고급 사용 예제
-# 이 스크립트는 IPDS의 고급 기능들을 보여줍니다.
+# IPDS Advanced Usage Examples
+# This script demonstrates the advanced features of IPDS.
 
-echo "=== IPDS 고급 사용 예제 ==="
+echo "=== IPDS Advanced Usage Examples ==="
 echo
 
-echo "1. 다양한 출력 형식"
+echo "1. Various Output Formats"
 echo "================================"
 
-echo "JSON 형식으로 출력:"
+echo "Output in JSON format:"
 ipds 8.8.8.8 --format json
 echo
 
-echo "YAML 형식으로 출력:"
+echo "Output in YAML format:"
 ipds 8.8.8.8 --format yaml
 echo
 
-echo "CSV 형식으로 출력:"
+echo "Output in CSV format:"
 ipds 8.8.8.8 --format csv
 echo
 
-echo "2. 상세한 로깅"
+echo "2. Detailed Logging"
 echo "================================"
 
-echo "Verbose 모드로 실행:"
+echo "Run in verbose mode:"
 ipds 8.8.8.8 --verbose
 echo
 
-echo "3. 다양한 지리적 위치 서비스"
+echo "3. Various Geolocation Services"
 echo "================================"
 
-echo "IP-API 서비스 사용:"
+echo "Using IP-API service:"
 ipds 8.8.8.8 --geo-service ipapi --geo-only
 echo
 
-echo "IPInfo 서비스 사용:"
+echo "Using IPInfo service:"
 ipds 8.8.8.8 --geo-service ipinfo --geo-only
 echo
 
-echo "4. 다양한 ASN 서비스"
+echo "4. Various ASN Services"
 echo "================================"
 
-echo "IP-API ASN 서비스 사용:"
+echo "Using IP-API ASN service:"
 ipds 8.8.8.8 --asn-service ipapi --asn-only
 echo
 
-echo "IPInfo ASN 서비스 사용:"
+echo "Using IPInfo ASN service:"
 ipds 8.8.8.8 --asn-service ipinfo --asn-only
 echo
 
-echo "HackerTarget ASN 서비스 사용:"
+echo "Using HackerTarget ASN service:"
 ipds 8.8.8.8 --asn-service hackertarget --asn-only
 echo
 
-echo "5. 대용량 배치 처리"
+echo "5. Large-Scale Batch Processing"
 echo "================================"
 
-echo "대용량 IP 목록 생성 중..."
+echo "Creating large IP list..."
 cat > large_ip_list.txt << EOF
 8.8.8.8
 1.1.1.1
@@ -71,54 +71,54 @@ cat > large_ip_list.txt << EOF
 76.223.126.88
 EOF
 
-echo "대용량 배치 처리 실행:"
+echo "Executing large-scale batch processing:"
 ipds --file large_ip_list.txt --output large_batch_results.json
-echo "완료: large_batch_results.json"
+echo "Completed: large_batch_results.json"
 echo
 
-echo "6. 성능 테스트"
+echo "6. Performance Testing"
 echo "================================"
 
-echo "단일 IP 처리 시간 측정:"
+echo "Measuring single IP processing time:"
 time ipds 8.8.8.8 --quiet
 echo
 
-echo "배치 처리 시간 측정:"
+echo "Measuring batch processing time:"
 time ipds --file large_ip_list.txt --quiet --output performance_test.json
 echo
 
-echo "7. 에러 처리 테스트"
+echo "7. Error Handling Testing"
 echo "================================"
 
-echo "유효하지 않은 IP 주소 테스트:"
-ipds 999.999.999.999 2>/dev/null || echo "예상된 오류: 유효하지 않은 IP"
+echo "Testing invalid IP address:"
+ipds 999.999.999.999 2>/dev/null || echo "Expected error: Invalid IP"
 echo
 
-echo "존재하지 않는 파일 테스트:"
-ipds --file nonexistent.txt 2>/dev/null || echo "예상된 오류: 파일을 찾을 수 없음"
+echo "Testing non-existent file:"
+ipds --file nonexistent.txt 2>/dev/null || echo "Expected error: File not found"
 echo
 
-echo "8. 결과 분석"
+echo "8. Result Analysis"
 echo "================================"
 
 if [ -f "large_batch_results.json" ]; then
-    echo "배치 처리 결과 분석:"
-    echo "총 IP 개수: $(jq length large_batch_results.json 2>/dev/null || echo '분석 불가')"
-    echo "프라이빗 IP 개수: $(jq '[.[] | select(.basic_info.is_private == true)] | length' large_batch_results.json 2>/dev/null || echo '분석 불가')"
-    echo "공인 IP 개수: $(jq '[.[] | select(.basic_info.is_private == false)] | length' large_batch_results.json 2>/dev/null || echo '분석 불가')"
+    echo "Batch processing result analysis:"
+    echo "Total IP count: $(jq length large_batch_results.json 2>/dev/null || echo 'Analysis unavailable')"
+    echo "Private IP count: $(jq '[.[] | select(.basic_info.is_private == true)] | length' large_batch_results.json 2>/dev/null || echo 'Analysis unavailable')"
+    echo "Public IP count: $(jq '[.[] | select(.basic_info.is_private == false)] | length' large_batch_results.json 2>/dev/null || echo 'Analysis unavailable')"
 fi
 echo
 
-echo "9. 정리"
+echo "9. Cleanup"
 echo "================================"
 
-echo "생성된 파일들:"
+echo "Generated files:"
 ls -la *.txt *.json 2>/dev/null | head -10
 
 echo
-echo "임시 파일 정리 중..."
+echo "Cleaning up temporary files..."
 rm -f ip_list.txt large_ip_list.txt *.json 2>/dev/null
-echo "정리 완료"
+echo "Cleanup completed"
 echo
 
-echo "=== 고급 사용 예제 완료 ==="
+echo "=== Advanced Usage Examples Complete ==="
