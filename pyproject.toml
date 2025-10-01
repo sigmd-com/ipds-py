@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ipds"
+version = "0.1.0dev"
+description = "IP Describe Library - Comprehensive IP information lookup tool"
+authors = [{name = "Juan Lee", email = "me@juany.kr"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.25.0",
+    "ipaddress>=1.0.23",
+    "dnspython>=2.0.0",
+    "python-whois>=0.7.0",
+    "geoip2>=4.5.0",
+    "maxminddb>=2.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+]
+
+[project.scripts]
+ipds = "ipds.cli:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
