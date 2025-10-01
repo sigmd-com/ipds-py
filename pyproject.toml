@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ipds"
-version = "0.1.0dev"
+version = "0.1.0"
 description = "IP Describe Library - Comprehensive IP information lookup tool"
 authors = [{name = "Juan Lee", email = "juan.lee@sigmd.com"}]
 license = {text = "MIT"}
@@ -12,11 +12,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "requests>=2.25.0",
-    "ipaddress>=1.0.23",
-    "dnspython>=2.0.0",
-    "python-whois>=0.7.0",
-    "geoip2>=4.5.0",
-    "maxminddb>=2.2.0",
 ]
 
 [project.optional-dependencies]
