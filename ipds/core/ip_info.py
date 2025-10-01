@@ -43,6 +43,7 @@ class IPInfo:
         info = {
             "ip_address": self.ip_address,
             "basic_info": self.get_basic_info(),
+            "network_info": self.get_network_info(),
             "geolocation": self.get_geolocation(),
             "asn": self.get_asn_info(),
             "whois": self.get_whois_info(),
@@ -102,9 +103,11 @@ class IPInfo:
         Get network information for the IP address.
         
         Returns:
-            Dictionary with network data
+            Dictionary with network data including subnet mask information
         """
         try:
+            ip_obj = ipaddress.ip_address(self.ip_address)
+            
             if self.validator.is_private(self.ip_address):
                 if self.validator.is_class_a_private(self.ip_address):
                     network = ipaddress.IPv4Network("10.0.0.0/8")
@@ -113,20 +116,29 @@ class IPInfo:
                 elif self.validator.is_class_c_private(self.ip_address):
                     network = ipaddress.IPv4Network("192.168.0.0/16")
                 else:
-                    network = None
+                    if ip_obj in ipaddress.IPv4Network("127.0.0.0/8"):
+                        network = ipaddress.IPv4Network("127.0.0.0/8")
+                    elif ip_obj in ipaddress.IPv4Network("169.254.0.0/16"):
+                        network = ipaddress.IPv4Network("169.254.0.0/16")
+                    else:
+                        network = None
             else:
-                network = None
+                asn_network_info = self.asn.get_network_info_for_public_ip(self.ip_address)
+                return asn_network_info
             
             if network:
                 return {
-                    "network": str(network.network_address),
-                    "netmask": str(network.netmask),
-                    "broadcast": str(network.broadcast_address),
-                    "num_addresses": network.num_addresses,
-                    "prefixlen": network.prefixlen,
+                    "network_address": str(network.network_address),
+                    "subnet_mask": str(network.netmask),
+                    "subnet_mask_cidr": f"/{network.prefixlen}",
+                    "broadcast_address": str(network.broadcast_address),
+                    "total_addresses": network.num_addresses,
+                    "usable_addresses": network.num_addresses - 2,
+                    "prefix_length": network.prefixlen,
+                    "network_range": f"{network.network_address}/{network.prefixlen}",
+                    "is_private": True,
+                    "ip_type": "Private"
                 }
-            else:
-                return {"network": "Unknown", "note": "Public IP - network info not available"}
                 
         except Exception as e:
             return {"error": f"Failed to get network info: {str(e)}"}

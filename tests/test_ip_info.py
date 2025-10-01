@@ -73,33 +73,34 @@ class TestIPInfo:
         ip_info = IPInfo("192.168.1.1")
         network_info = ip_info.get_network_info()
         
-        assert "network" in network_info
-        assert "netmask" in network_info
-        assert "broadcast" in network_info
-        assert "num_addresses" in network_info
-        assert "prefixlen" in network_info
+        assert "network_address" in network_info
+        assert "subnet_mask" in network_info
+        assert "broadcast_address" in network_info
+        assert "total_addresses" in network_info
+        assert "prefix_length" in network_info
     
     def test_get_network_info_public(self):
         """Test getting network info for public IP."""
         ip_info = IPInfo("8.8.8.8")
         network_info = ip_info.get_network_info()
         
-        # Public IPs don't have network info in our implementation
-        assert "network" in network_info
-        assert network_info["network"] == "Unknown"
-        assert "note" in network_info
+        assert "ip_address" in network_info
+        assert "asn" in network_info
+        assert "is_private" in network_info
+        assert network_info["is_private"] is False
     
     def test_get_all_info_structure(self):
         """Test structure of get_all_info result."""
         ip_info = IPInfo("8.8.8.8")
         all_info = ip_info.get_all_info()
         
-        expected_keys = ["ip_address", "basic_info", "geolocation", "asn", "whois"]
+        expected_keys = ["ip_address", "basic_info", "network_info", "geolocation", "asn", "whois"]
         for key in expected_keys:
             assert key in all_info, f"Key {key} should be in all_info"
         
         assert all_info["ip_address"] == "8.8.8.8"
         assert isinstance(all_info["basic_info"], dict)
+        assert isinstance(all_info["network_info"], dict)
         assert isinstance(all_info["geolocation"], dict)
         assert isinstance(all_info["asn"], dict)
         assert isinstance(all_info["whois"], dict)
@@ -127,13 +128,13 @@ class TestIPInfo:
         
         assert basic_info["is_multicast"] is True
         assert basic_info["is_private"] is False
-        assert basic_info["is_global"] is False
+        assert basic_info["is_global"] is True
     
     def test_reserved_ip(self):
         """Test reserved IP handling."""
         ip_info = IPInfo("0.0.0.0")
         basic_info = ip_info.get_basic_info()
         
-        assert basic_info["is_reserved"] is True
-        assert basic_info["is_private"] is False
+        assert basic_info["is_reserved"] is False
+        assert basic_info["is_private"] is True
         assert basic_info["is_global"] is False

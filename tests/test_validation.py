@@ -131,11 +131,11 @@ class TestIPValidator:
     def test_validate_ip_list(self):
         """Test IP list validation."""
         ip_list = [
-            "8.8.8.8",      # valid public IPv4
-            "192.168.1.1",  # valid private IPv4
-            "2001:db8::1",  # valid IPv6
-            "256.1.1.1",    # invalid IPv4
-            "not.an.ip",    # invalid
+            "8.8.8.8",
+            "192.168.1.1",
+            "2001:db8::1",
+            "256.1.1.1",
+            "not.an.ip",
         ]
         
         results = self.validator.validate_ip_list(ip_list)

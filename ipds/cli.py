@@ -22,6 +22,8 @@ Examples:
   ipds 8.8.8.8 --asn-only         # Get only ASN info
   ipds 8.8.8.8 --geo-only         # Get only geolocation info
   ipds 8.8.8.8 --whois-only       # Get only WHOIS info
+  ipds 8.8.8.8 --network-only     # Get only network info (subnet mask, etc.)
+  ipds 8.8.8.8 --basic-only       # Get only basic IP information
   ipds 8.8.8.8 --output result.json  # Save to JSON file
   ipds --file ip_list.txt         # Process multiple IPs
         """
@@ -72,6 +74,12 @@ Examples:
         "--basic-only",
         action="store_true",
         help="Show only basic IP information"
+    )
+    
+    parser.add_argument(
+        "--network-only",
+        action="store_true",
+        help="Show only network information (subnet mask, network range, etc.)"
     )
     
     parser.add_argument(
@@ -133,6 +141,8 @@ def process_single_ip(args):
             result = ip_info.get_geolocation()
         elif args.whois_only:
             result = ip_info.get_whois_info()
+        elif args.network_only:
+            result = ip_info.get_network_info()
         else:
             result = ip_info.get_all_info()
         
@@ -174,6 +184,8 @@ def process_file(args):
                     result = ip_info.get_geolocation()
                 elif args.whois_only:
                     result = ip_info.get_whois_info()
+                elif args.network_only:
+                    result = ip_info.get_network_info()
                 else:
                     result = ip_info.get_all_info()
                 
